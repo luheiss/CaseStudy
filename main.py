@@ -5,8 +5,8 @@ tab1, tab2, tab3, tab4 = st.tabs(["Reservierungen", "Geräte", "Nutzer", "Wartun
 
 
 with tab1:
-    st.header("Reserviernungssystem")
-    #st.write("# Reserviernungssystem")
+    st.header("Reservierungssystem")
+    st.write("Reserviernungssystem")
 with tab2:
     st.header("Geräte- Verwaltung")
 with tab3:
