@@ -25,7 +25,7 @@ Dieses Python-Projekt ermöglicht die Verwaltung von Benutzern und Maschinen üb
 ## Verwendung
 Starte die Streamlit-Anwendung:
 ```bash
-streamlit run app.py
+streamlit run main.py
 ```
 
 Öffne deinen Browser und gehe zu `http://localhost:8501`, um die Anwendung zu verwenden.
