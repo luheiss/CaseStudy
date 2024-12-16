@@ -27,5 +27,3 @@ streamlit run main.py
 - [ ] Benutzer-Authentifizierung hinzufügen
 - [ ] Export- und Import-Funktionalität für Daten
 
-## Mitwirken
-Pull-Requests sind willkommen! Für größere Änderungen erstelle bitte zuerst ein Issue, um die Änderung zu besprechen.
