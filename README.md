@@ -9,15 +9,7 @@ Dieses Python-Projekt ermöglicht die Verwaltung von Benutzern und Maschinen üb
 - Intuitive und einfach bedienbare Benutzeroberfläche
 
 ## Installation
-1. Klone dieses Repository:
-   ```bash
-   git clone <repository-url>
-   ```
-2. Wechsle in das Projektverzeichnis:
-   ```bash
-   cd <projektordner>
-   ```
-3. Installiere die benötigten Abhängigkeiten:
+ Installiere die benötigten Abhängigkeiten:
    ```bash
    pip install -r requirements.txt
    ```
