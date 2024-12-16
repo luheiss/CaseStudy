@@ -10,9 +10,9 @@ Dieses Python-Projekt ermöglicht die Verwaltung von Benutzern und Maschinen üb
 
 ## Installation
  Erstelle eine Virtuwlleumgebung:
-   '''bash
+   ```bash
    python -m venv .venv
-   '''
+   ```
  Installiere die benötigten Abhängigkeiten:
    ```bash
    pip install -r requirements.txt
