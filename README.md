@@ -9,6 +9,10 @@ Dieses Python-Projekt ermöglicht die Verwaltung von Benutzern und Maschinen üb
 - Intuitive und einfach bedienbare Benutzeroberfläche
 
 ## Installation
+ Erstelle eine Virtuwlleumgebung:
+   ```bash
+   python -m venv .venv
+   ```
  Installiere die benötigten Abhängigkeiten:
    ```bash
    pip install -r requirements.txt
@@ -27,5 +31,3 @@ streamlit run main.py
 - [ ] Benutzer-Authentifizierung hinzufügen
 - [ ] Export- und Import-Funktionalität für Daten
 
-## Mitwirken
-Pull-Requests sind willkommen! Für größere Änderungen erstelle bitte zuerst ein Issue, um die Änderung zu besprechen.
