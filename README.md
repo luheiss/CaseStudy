@@ -29,7 +29,8 @@ streamlit run main.py
 
 ## To-Do
 - [ ] stremlit echarts in requierements
-- [ ] Verbesserte Datenvisualisierung
-- [ ] Benutzer-Authentifizierung hinzufügen
 - [ ] Export- und Import-Funktionalität für Daten
+- [ ] Benutzer-Authentifizierung hinzufügen
+
+
 
