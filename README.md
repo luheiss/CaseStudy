@@ -1,5 +1,6 @@
 # Benutzer- und Maschinenverwaltung mit Streamlit
-
+## UI- Geräteverwaltung
+https://github.com/luheiss/CaseStudy/blob/main/imag/Screenshot%202025-01-06%20185817.jpg
 ## Übersicht
 Dieses Python-Projekt ermöglicht die Verwaltung von Benutzern und Maschinen über eine benutzerfreundliche Weboberfläche, die mit [Streamlit](https://streamlit.io/) entwickelt wurde. 
 
