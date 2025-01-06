@@ -27,6 +27,7 @@ streamlit run main.py
 Öffne deinen Browser und gehe zu `http://localhost:8501`, um die Anwendung zu verwenden.
 
 ## To-Do
+- [ ] stremlit echarts in requierements
 - [ ] Verbesserte Datenvisualisierung
 - [ ] Benutzer-Authentifizierung hinzufügen
 - [ ] Export- und Import-Funktionalität für Daten
