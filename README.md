@@ -33,3 +33,8 @@ streamlit run main.py
 - [ ] Benutzer-Authentifizierung hinzufügen
 - [ ] Export- und Import-Funktionalität für Daten
 
+# Geräteverwaltung Mockup
+
+Dies ist ein Mockup des Reservierungssystems für Geräte, das im Rahmen der Case Study entwickelt wird.
+
+![Mockup Screenshot](imag/Screenshot%202025-01-06%20200114.png)
