@@ -2,8 +2,7 @@ import streamlit as st
 from devices import Device
 from queries import find_devices
 
-st.title("Reservierungssystem - Geräteverwaltung")
-
+st.title("Reservierungssystem")
 st.header("Reservierungssystem")
 
 # 1. Gerät auswählen

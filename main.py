@@ -1,11 +1,12 @@
 import streamlit as st
 from devices import Device
+from users import User
 from queries import find_devices
 
 st.title("Geräteverwaltung MCI")
 
 tab1, tab2, tab3, tab4 = st.tabs(["Reservierungen", "Geräte", "Nutzer", "Wartungen"])
-device_list=["Test1","Gerät_2"]
+#device_list=["Test1","Gerät_2"]
 
 with tab1:
     st.header("Reservierungssystem")
@@ -56,20 +57,68 @@ with tab1:
 
 
 with tab2:
-    st.header("Geräte- Verwaltung")
+    # Eine Überschrift der ersten Ebene
+    st.write("# Gerätemanagement")
     new_device= st.text_input("Neues Gerät anlegen", key="add_new_device")
-    if st.button("Gerät hinzufügen"):
-       if new_device:  # Prüfe, ob das Eingabefeld nicht leer ist
-           device_list.append(new_device)
-           st.success(f"Gerät '{new_device}' hinzugefügt!")
-       else:
-           st.warning("Bitte einen gültigen Gerätenamen eingeben!")
+    #user_id= st.text_input("User", key="add_user")
+    user_id= st.selectbox('User auswählen', options=(1,2))
+    if st.button("Gerät anlegen"):
+        if not new_device or not user_id:
+            st.error("Bitte gültige Namen eingeben!")
+        else:
+            new=Device(device_name=new_device, managed_by_user_id=user_id)
+            new.store_data()
+            st.success(f"Gerät *{new_device}* wurde erfolgreich angelegt!")
 
-    current_device = st.selectbox(label='Gerät auswählen', options = device_list)
-    st.write(F"Das ausgewählte Gerät ist {current_device}")
+        
+    
+    devices_in_db = find_devices()
+
+    if devices_in_db:
+        current_device_name = st.selectbox(
+            'Gerät auswählen',
+            options=devices_in_db, key="sbDevice")
+
+        if current_device_name in devices_in_db:
+            loaded_device = Device.find_by_attribute("device_name", current_device_name)
+            if loaded_device:
+                st.write(f"Loaded Device: {loaded_device}")
+            else:
+                st.error("Device not found in the database.")
+
+            with st.form("Device"):
+                st.write(loaded_device.device_name)
+
+                text_input_val = st.text_input("Geräte-Verantwortlicher", value=loaded_device.managed_by_user_id)
+                loaded_device.set_managed_by_user_id(text_input_val)
+
+                # Every form must have a submit button.
+                submitted = st.form_submit_button("Submit")
+                if submitted:
+                    loaded_device.store_data()
+                    st.write("Data stored.")
+                    st.rerun()
+        else:
+            st.error("Selected device is not in the database.")
+    else:
+        st.write("No devices found.")
+        st.stop()
+
+    st.write("Session State:")
+    st.session_state
 
 with tab3:
     st.header("Nutzer- Verwaltung")
+    new_user_name= st.text_input("Name")
+    new_user_email= st.text_input("Email")
+    if st.button("Benutzer anlegen"):
+        if not new_user_name or not new_user_email:
+            st.error("Bitte gültige Namen eingeben!")
+        else:
+            new=User(new_user_email, new_user_name)
+            new.store_data()
+            st.success(f"Benutzer *{new_user_name}* wurde erfolgreich angelegt!")
+
 
 with tab4:
     st.header("Wartungsmanagement")
