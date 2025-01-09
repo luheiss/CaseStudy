@@ -1,7 +1,7 @@
 import streamlit as st
 from devices import Device
 from users import User
-from queries import find_devices
+import queries as qr
 
 st.title("Geräteverwaltung MCI")
 
@@ -13,7 +13,7 @@ with tab1:
 
     # 1. Gerät auswählen
     st.subheader("Gerät auswählen")
-    devices_in_db = find_devices()
+    devices_in_db = qr.find_devices()
 
     if devices_in_db:
         selected_device = st.selectbox("Wählen Sie ein Gerät:", devices_in_db)
@@ -58,10 +58,12 @@ with tab1:
 
 with tab2:
     # Eine Überschrift der ersten Ebene
+    devices_in_db = qr.find_devices()
+    user_in_db = qr.find_users()
     st.write("# Gerätemanagement")
     new_device= st.text_input("Neues Gerät anlegen", key="add_new_device")
     #user_id= st.text_input("User", key="add_user")
-    user_id= st.selectbox('User auswählen', options=(1,2))
+    user_id= st.selectbox('User auswählen', user_in_db)
     if st.button("Gerät anlegen"):
         if not new_device or not user_id:
             st.error("Bitte gültige Namen eingeben!")
@@ -72,12 +74,9 @@ with tab2:
 
         
     
-    devices_in_db = find_devices()
 
     if devices_in_db:
-        current_device_name = st.selectbox(
-            'Gerät auswählen',
-            options=devices_in_db, key="sbDevice")
+        current_device_name = st.selectbox('Gerät auswählen',options=devices_in_db, key="sbDevice")
 
         if current_device_name in devices_in_db:
             loaded_device = Device.find_by_attribute("device_name", current_device_name)
