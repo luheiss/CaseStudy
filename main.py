@@ -10,11 +10,10 @@ tab1, tab2, tab3, tab4 = st.tabs(["Reservierungen", "Geräte", "Nutzer", "Wartun
 
 with tab1:
     st.header("Reservierungssystem")
-
+    devices_in_db = qr.find_devices()
+    user_in_db = qr.find_users()
     # 1. Gerät auswählen
     st.subheader("Gerät auswählen")
-    devices_in_db = qr.find_devices()
-
     if devices_in_db:
         selected_device = st.selectbox("Wählen Sie ein Gerät:", devices_in_db)
         if selected_device:
@@ -58,15 +57,15 @@ with tab1:
 
 with tab2:
     # Eine Überschrift der ersten Ebene
+    st.write("# Gerätemanagement")
     devices_in_db = qr.find_devices()
     user_in_db = qr.find_users()
-    st.write("# Gerätemanagement")
 
     col1, col2 = st.columns(2)
     with col1:
         col_add_device = st.checkbox("Neues Gerät anlegen", True)
     with col2: 
-        col_change_device = st.checkbox("Geräte Einstellungen ändern")
+        col_change_device = st.checkbox("Geräte Einstellungen ändern",False)
 
     if col_add_device:
         new_device= st.text_input("Neues Gerät anlegen", key="add_new_device")
@@ -115,6 +114,7 @@ with tab2:
     st.session_state
 
 with tab3:
+    #devices_in_db = qr.find_devices()
     user_in_db = qr.find_users()
     st.header("Nutzer- Verwaltung")
     new_user_name= st.text_input("Name")
@@ -126,9 +126,11 @@ with tab3:
             st.error(f"Ein Benutzer mit der email: *{new_user_email}* existiert bereits!")
 
         else:
-            new=User(new_user_email, new_user_name)
-            new.store_data()
+            newUser=User(new_user_email,new_user_name)
+            newUser.store_data()
             st.success(f"Benutzer *{new_user_name}* wurde erfolgreich angelegt!")
+    st.write("Edit user")
+    st.selectbox("User",user_in_db)
 
 
 with tab4:

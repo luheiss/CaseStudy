@@ -11,8 +11,7 @@ def find_devices() -> list:
     
     # The result is a list of dictionaries, we only want the device names
     if result:
-        result = [x["device_name"] for x in result]
-    
+        result = [x["device_name"] for x in result if "device_name" in x]
     return result
 
 def find_users() -> list:
@@ -24,11 +23,10 @@ def find_users() -> list:
     
     # The result is a list of dictionaries, we only want the device names
     if result:
-        result = [y["user_name"] for y in result]
-    
+        result = [y["id"] for y in result if "id" in y]
     return result
 
 
 
 if __name__ == "__main__":
-    print(find_devices())
+    print(find_users())
