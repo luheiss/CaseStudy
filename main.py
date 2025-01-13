@@ -56,62 +56,54 @@ with tab1:
 
 
 with tab2:
-    # Eine Überschrift der ersten Ebene
+    # Überschrift
     st.write("# Gerätemanagement")
+
+    # Alle Geräte und Benutzer aus der Datenbank laden
     devices_in_db = qr.find_devices()
     user_in_db = qr.find_users()
 
-    col1, col2 = st.columns(2)
-    with col1:
-        col_add_device = st.checkbox("Neues Gerät anlegen", True)
-    with col2: 
-        col_change_device = st.checkbox("Geräte Einstellungen ändern",False)
+    # Auswahloptionen mit st.radio
+    action = st.radio("Was möchten Sie tun?", ["Neues Gerät anlegen", "Geräte-Einstellungen ändern"])
 
-    if col_add_device:
-        new_device= st.text_input("Neues Gerät anlegen", key="add_new_device")
-        #user_id= st.text_input("User", key="add_user")
-        user_id= st.selectbox('User auswählen', user_in_db)
+    if action == "Neues Gerät anlegen":
+        # Neues Gerät anlegen
+        new_device = st.text_input("Gerätename eingeben:")
+        user_id = st.selectbox("Verantwortlichen auswählen:", user_in_db)
+
         if st.button("Gerät anlegen"):
             if not new_device or not user_id:
-                st.error("Bitte gültige Namen eingeben!")
+                st.error("Bitte gültige Eingaben machen!")
             else:
-                new=Device(device_name=new_device, managed_by_user_id=user_id)
+                new = Device(device_name=new_device, managed_by_user_id=user_id)
                 new.store_data()
-                st.success(f"Gerät *{new_device}* wurde erfolgreich angelegt!")
+                st.success(f"Gerät **{new_device}** wurde erfolgreich angelegt!")
 
-        
-    
-    if col_change_device:
+    elif action == "Geräte-Einstellungen ändern":
+        # Gerät auswählen und bearbeiten
         if devices_in_db:
-            current_device_name = st.selectbox('Gerät auswählen',options=devices_in_db, key="sbDevice")
+            current_device_name = st.selectbox("Gerät auswählen:", options=devices_in_db)
 
-            if current_device_name in devices_in_db:
+            if current_device_name:
                 loaded_device = Device.find_by_attribute("device_name", current_device_name)
+
                 if loaded_device:
-                    st.write(f"Loaded Device: {loaded_device}")
+                    st.write(f"Ausgewähltes Gerät: **{loaded_device.device_name}**")
+
+                    with st.form("Geräte-Einstellungen"):
+                        new_manager = st.text_input(
+                            "Neuer Verantwortlicher", value=loaded_device.managed_by_user_id
+                        )
+                        submitted = st.form_submit_button("Speichern")
+                        if submitted:
+                            loaded_device.set_managed_by_user_id(new_manager)
+                            loaded_device.store_data()
+                            st.success(f"Änderungen für **{loaded_device.device_name}** wurden gespeichert!")
+                            st.experimental_rerun()
                 else:
-                    st.error("Device not found in the database.")
-
-                with st.form("Device"):
-                    st.write(loaded_device.device_name)
-
-                    text_input_val = st.text_input("Geräte-Verantwortlicher", value=loaded_device.managed_by_user_id)
-                    loaded_device.set_managed_by_user_id(text_input_val)
-
-                    # Every form must have a submit button.
-                    submitted = st.form_submit_button("Submit")
-                    if submitted:
-                        loaded_device.store_data()
-                        st.write("Data stored.")
-                        st.rerun()
-            else:
-                st.error("Selected device is not in the database.")
+                    st.error("Gerät nicht in der Datenbank gefunden.")
         else:
-            st.write("No devices found.")
-            st.stop()
-
-    st.write("Session State:")
-    st.session_state
+            st.warning("Keine Geräte in der Datenbank gefunden.")
 
 with tab3:
     #devices_in_db = qr.find_devices()
