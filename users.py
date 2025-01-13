@@ -30,7 +30,15 @@ class User:
 
     def delete(self) -> None:
         """Delete the user from the database"""
-        pass
+        print("Deleting data...")
+        UserQuery = Query()
+        result = self.db_connector.search(UserQuery.id == self.id)
+        if result:
+            # Delete the record from the database
+            self.db_connector.remove(doc_ids=[result[0].doc_id])
+            print("Data deleted.")
+        else:
+            print("Data not found.")
     
     def __str__(self):
         return f"User {self.id} - {self.name}"
@@ -41,9 +49,20 @@ class User:
     @staticmethod
     def find_all(cls) -> list:
         """Find all users in the database"""
-        pass
+        users = []
+        for user_data in User.db_connector.all():
+            users.append(User(user_data['device_name'], user_data['managed_by_user_id']))
+        return users
 
     @classmethod
-    def find_by_attribute(cls, by_attribute : str, attribute_value : str) -> 'User':
+    def find_by_attribute(cls, by_attribute : str, attribute_value : str, num_to_return = None) -> 'User':
         """From the matches in the database, select the user with the given attribute value"""
-        pass
+        UserQuery = Query()
+        result = cls.db_connector.search(UserQuery[by_attribute] == attribute_value)
+
+        if result:
+            data = result[:num_to_return]
+            device_results = [cls(d['device_name'], d['managed_by_user_id']) for d in data]
+            return device_results if num_to_return > 1 else device_results[0]
+        else:
+            return None
