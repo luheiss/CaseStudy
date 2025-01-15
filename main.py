@@ -60,14 +60,10 @@ with tab2:
     st.write("# Gerätemanagement")
     devices_in_db = qr.find_devices()
     user_in_db = qr.find_users()
+    tab5, tab6 = st.tabs(["Neues Gerät anlegen","Geräte Einstellungen ändern"])
 
-    col1, col2 = st.columns(2)
-    with col1:
-        col_add_device = st.checkbox("Neues Gerät anlegen", True)
-    with col2: 
-        col_change_device = st.checkbox("Geräte Einstellungen ändern",False)
 
-    if col_add_device:
+    with tab5:
         new_device= st.text_input("Neues Gerät anlegen", key="add_new_device")
         #user_id= st.text_input("User", key="add_user")
         user_id= st.selectbox('User auswählen', user_in_db)
@@ -79,59 +75,59 @@ with tab2:
                 new.store_data()
                 st.success(f"Gerät *{new_device}* wurde erfolgreich angelegt!")
 
-        
-    
-    if col_change_device:
+    with tab6:
         if devices_in_db:
             current_device_name = st.selectbox('Gerät auswählen',options=devices_in_db, key="sbDevice")
-
             if current_device_name in devices_in_db:
                 loaded_device = Device.find_by_attribute("device_name", current_device_name)
                 if loaded_device:
                     st.write(f"Loaded Device: {loaded_device}")
                 else:
                     st.error("Device not found in the database.")
-
-                with st.form("Device"):
-                    st.write(loaded_device.device_name)
-
-                    text_input_val = st.text_input("Geräte-Verantwortlicher", value=loaded_device.managed_by_user_id)
-                    loaded_device.set_managed_by_user_id(text_input_val)
-
-                    # Every form must have a submit button.
-                    submitted = st.form_submit_button("Submit")
-                    if submitted:
-                        loaded_device.store_data()
-                        st.write("Data stored.")
-                        st.rerun()
+                
+                st.write(loaded_device.device_name)
+                #text_input_val = st.text_input("Geräte-Verantwortlicher", value=loaded_device.managed_by_user_id)
+                change_user_id= st.selectbox('User ändern', user_in_db)
+                loaded_device.set_managed_by_user_id(change_user_id)
+                # Every form must have a submit button.
+                submitted = st.button("Submit")
+                if submitted:
+                    loaded_device.store_data()
+                    st.write("Data stored.")
+                    st.rerun()
             else:
                 st.error("Selected device is not in the database.")
         else:
             st.write("No devices found.")
             st.stop()
 
-    st.write("Session State:")
-    st.session_state
+    #st.write("Session State:")
+    #st.session_state
 
 with tab3:
     #devices_in_db = qr.find_devices()
     user_in_db = qr.find_users()
     st.header("Nutzer- Verwaltung")
-    new_user_name= st.text_input("Name")
-    new_user_email= st.text_input("Email")
-    if st.button("Benutzer anlegen"):
-        if not new_user_name or not new_user_email:
-            st.error("Bitte gültige Namen eingeben!")
-        elif new_user_email == user_in_db:
-            st.error(f"Ein Benutzer mit der email: *{new_user_email}* existiert bereits!")
+    tab7,tab8= st.tabs(["Neuen Nutzer anlegen", "Nutzer bearbeiten"])
+    with tab7:
+        new_user_name= st.text_input("Name")
+        new_user_email= st.text_input("Email")
+        if st.button("Benutzer anlegen"):
+            if not new_user_name or not new_user_email:
+                st.error("Bitte gültige Namen eingeben!")
+            elif new_user_email == user_in_db:
+                st.error(f"Ein Benutzer mit der email: *{new_user_email}* existiert bereits!")
 
-        else:
-            newUser=User(new_user_email,new_user_name)
-            newUser.store_data()
-            st.success(f"Benutzer *{new_user_name}* wurde erfolgreich angelegt!")
-    st.write("Edit user")
-    st.selectbox("User",user_in_db)
+            else:
+                newUser=User(new_user_email,new_user_name)
+                newUser.store_data()
+                st.success(f"Benutzer *{new_user_name}* wurde erfolgreich angelegt!")
+    with tab8:
+        st.write("Edit user")
+        current_user= st.selectbox("User",user_in_db)
+        all_users=User.find_by_attribute("id", current_user)
 
+        st.write(all_users)
 
 with tab4:
     st.header("Wartungsmanagement")

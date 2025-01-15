@@ -1,1 +1,73 @@
-{"devices": {"1": {"device_name": "Device1", "managed_by_user_id": "tttttttttt.edu", "is_active": true}, "2": {"device_name": "Device2", "managed_by_user_id": "two@mci.edu", "is_active": true}, "3": {"device_name": "Device3", "managed_by_user_id": "four@mci.edu", "is_active": true}, "4": {"device_name": "Device4", "managed_by_user_id": "two@mci.edu", "is_active": true}, "5": {"device_name": "Device 5", "managed_by_user_id": "test@email.de", "is_active": true}}, "devices_with_subclass": {"1": {"device_name": "Device1", "managed_by_user_id": "one@mci.edu", "is_active": true, "reservation": {"name": "res1", "start_date": "{TinyDateTime}:2021-01-01T00:00:00", "end_date": "{TinyDateTime}:2021-01-02T00:00:00"}}}, "users": {"1": {"name": "User1", "id": "tttttttttt.edu", "is_active": true}, "2": {"name": "User2", "id": "two@mci.edu", "is_active": true}, "3": {"name": "User3", "id": "four@mci.edu", "is_active": true}, "4": {"name": "User4", "id": "one@mci.edu", "is_active": true}, "5": {"name": "testUser", "id": "test@email.de", "is_active": true}}}
+{
+    "devices": {
+        "1": {
+            "device_name": "Device1",
+            "managed_by_user_id": "tttttttttt.edu",
+            "is_active": true
+        },
+        "2": {
+            "device_name": "Device2",
+            "managed_by_user_id": "two@mci.edu",
+            "is_active": true
+        },
+        "3": {
+            "device_name": "Device3",
+            "managed_by_user_id": "four@mci.edu",
+            "is_active": true
+        },
+        "4": {
+            "device_name": "Device4",
+            "managed_by_user_id": "two@mci.edu",
+            "is_active": true
+        },
+        "5": {
+            "device_name": "Device 5",
+            "managed_by_user_id": "test@email.de",
+            "is_active": true
+        },
+        "6": {
+            "device_name": "test",
+            "managed_by_user_id": "two@mci.edu",
+            "is_active": true
+        }
+    },
+    "devices_with_subclass": {
+        "1": {
+            "device_name": "Device1",
+            "managed_by_user_id": "one@mci.edu",
+            "is_active": true,
+            "reservation": {
+                "name": "res1",
+                "start_date": "{TinyDateTime}:2021-01-01T00:00:00",
+                "end_date": "{TinyDateTime}:2021-01-02T00:00:00"
+            }
+        }
+    },
+    "users": {
+        "1": {
+            "name": "User1",
+            "id": "tttttttttt.edu",
+            "is_active": true
+        },
+        "2": {
+            "name": "User2",
+            "id": "two@mci.edu",
+            "is_active": true
+        },
+        "3": {
+            "name": "User3",
+            "id": "four@mci.edu",
+            "is_active": true
+        },
+        "4": {
+            "name": "User4",
+            "id": "one@mci.edu",
+            "is_active": true
+        },
+        "5": {
+            "name": "lukasTest222",
+            "id": "test@email.de",
+            "is_active": true
+        }
+    }
+}

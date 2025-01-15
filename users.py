@@ -46,12 +46,12 @@ class User:
     def __repr__(self):
         return self.__str__()
     
-    @staticmethod
+    @classmethod
     def find_all(cls) -> list:
         """Find all users in the database"""
         users = []
         for user_data in User.db_connector.all():
-            users.append(User(user_data['device_name'], user_data['managed_by_user_id']))
+            users.append(User(user_data['name'], user_data['id']))
         return users
 
     @classmethod
@@ -62,7 +62,7 @@ class User:
 
         if result:
             data = result[:num_to_return]
-            device_results = [cls(d['device_name'], d['managed_by_user_id']) for d in data]
-            return device_results if num_to_return > 1 else device_results[0]
+            users_results = [cls(d['id']) for d in data]
+            return users_results if num_to_return > 1 else users_results[0]
         else:
             return None
