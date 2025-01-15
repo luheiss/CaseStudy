@@ -29,6 +29,11 @@
             "device_name": "test",
             "managed_by_user_id": "two@mci.edu",
             "is_active": true
+        },
+        "7": {
+            "device_name": "robert",
+            "managed_by_user_id": "four@mci.edu",
+            "is_active": true
         }
     },
     "devices_with_subclass": {

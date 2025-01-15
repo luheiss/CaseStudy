@@ -125,9 +125,9 @@ with tab3:
     with tab8:
         st.write("Edit user")
         current_user= st.selectbox("User",user_in_db)
-        all_users=User.find_by_attribute("id", current_user)
+        #all_users=User.find_by_attribute("id", current_user)
 
-        st.write(all_users)
+        #st.write(all_users)
 
 with tab4:
     st.header("Wartungsmanagement")
