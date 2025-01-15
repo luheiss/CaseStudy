@@ -56,8 +56,10 @@ with tab1:
 
 
 with tab2:
-    # Eine Überschrift der ersten Ebene
+    # Überschrift
     st.write("# Gerätemanagement")
+
+    # Alle Geräte und Benutzer aus der Datenbank laden
     devices_in_db = qr.find_devices()
     user_in_db = qr.find_users()
     tab5, tab6 = st.tabs(["Neues Gerät anlegen","Geräte Einstellungen ändern"])
@@ -69,9 +71,9 @@ with tab2:
         user_id= st.selectbox('User auswählen', user_in_db)
         if st.button("Gerät anlegen"):
             if not new_device or not user_id:
-                st.error("Bitte gültige Namen eingeben!")
+                st.error("Bitte gültige Eingaben machen!")
             else:
-                new=Device(device_name=new_device, managed_by_user_id=user_id)
+                new = Device(device_name=new_device, managed_by_user_id=user_id)
                 new.store_data()
                 st.success(f"Gerät *{new_device}* wurde erfolgreich angelegt!")
 
@@ -80,8 +82,20 @@ with tab2:
             current_device_name = st.selectbox('Gerät auswählen',options=devices_in_db, key="sbDevice")
             if current_device_name in devices_in_db:
                 loaded_device = Device.find_by_attribute("device_name", current_device_name)
+
                 if loaded_device:
-                    st.write(f"Loaded Device: {loaded_device}")
+                    st.write(f"Ausgewähltes Gerät: **{loaded_device.device_name}**")
+
+                    with st.form("Geräte-Einstellungen"):
+                        new_manager = st.text_input(
+                            "Neuer Verantwortlicher", value=loaded_device.managed_by_user_id
+                        )
+                        submitted = st.form_submit_button("Speichern")
+                        if submitted:
+                            loaded_device.set_managed_by_user_id(new_manager)
+                            loaded_device.store_data()
+                            st.success(f"Änderungen für **{loaded_device.device_name}** wurden gespeichert!")
+                            st.experimental_rerun()
                 else:
                     st.error("Device not found in the database.")
                 
