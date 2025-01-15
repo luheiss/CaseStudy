@@ -71,7 +71,10 @@ with tab2:
         user_id= st.selectbox('User auswählen', user_in_db)
         if st.button("Gerät anlegen"):
             if not new_device or not user_id:
-                st.error("Bitte gültige Eingaben machen!")
+                st.error("Bitte Name eingeben!")
+
+            elif new_device == Device.find_by_attribute("device_name", new_device):
+                 st.error("Dieses Gerät ist schon in der Datenbank hinterlegt!")
             else:
                 new = Device(device_name=new_device, managed_by_user_id=user_id)
                 new.store_data()
@@ -86,37 +89,14 @@ with tab2:
                 if loaded_device:
                     st.write(f"Ausgewähltes Gerät: **{loaded_device.device_name}**")
 
-                    with st.form("Geräte-Einstellungen"):
-                        new_manager = st.text_input(
-                            "Neuer Verantwortlicher", value=loaded_device.managed_by_user_id
-                        )
-                        submitted = st.form_submit_button("Speichern")
-                        if submitted:
-                            loaded_device.set_managed_by_user_id(new_manager)
-                            loaded_device.store_data()
-                            st.success(f"Änderungen für **{loaded_device.device_name}** wurden gespeichert!")
-                            st.experimental_rerun()
-                else:
-                    st.error("Device not found in the database.")
-                
-                st.write(loaded_device.device_name)
-                #text_input_val = st.text_input("Geräte-Verantwortlicher", value=loaded_device.managed_by_user_id)
-                change_user_id= st.selectbox('User ändern', user_in_db)
-                loaded_device.set_managed_by_user_id(change_user_id)
-                # Every form must have a submit button.
-                submitted = st.button("Submit")
-                if submitted:
-                    loaded_device.store_data()
-                    st.write("Data stored.")
-                    st.rerun()
-            else:
-                st.error("Selected device is not in the database.")
-        else:
-            st.write("No devices found.")
-            st.stop()
-
-    #st.write("Session State:")
-    #st.session_state
+                with st.form("Geräte-Einstellungen"):
+                                    new_manager= st.selectbox('User ändern', user_in_db)
+                                    submitted = st.form_submit_button("Speichern")
+                                    if submitted:
+                                        loaded_device.set_managed_by_user_id(new_manager)
+                                        loaded_device.store_data()
+                                        st.success(f"Änderungen für **{loaded_device.device_name}** wurden gespeichert!")
+                                        st.rerun()
 
 with tab3:
     #devices_in_db = qr.find_devices()
@@ -139,10 +119,17 @@ with tab3:
     with tab8:
         st.write("Edit user")
         current_user= st.selectbox("User",user_in_db)
-        #all_users=User.find_by_attribute("id", current_user)
-
-        #st.write(all_users)
-
+        if current_user in user_in_db:
+                loaded_user = User.find_by_attribute("id", current_user)
+    
+        with st.form("User-Einstellungen"):
+            new_name= st.text_input(f"Name: {loaded_user.name}", key="new_user")
+            submitted = st.form_submit_button("Speichern")
+            if submitted:
+                loaded_user.set_user_name(new_name)
+                loaded_user.store_data()
+                st.success(f"Änderungen für **{current_user}** wurden gespeichert!")
+                st.rerun()
 with tab4:
     st.header("Wartungsmanagement")
   

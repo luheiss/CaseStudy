@@ -27,7 +27,10 @@ class User:
             # If the device doesn't exist, insert a new record
             self.db_connector.insert(self.__dict__)
             print("User Data inserted.")
-
+            
+    def set_user_name(self, user_name: str):
+        """Expects `managed_by_user_id` to be a valid user id that exists in the database."""
+        self.name = user_name
     def delete(self) -> None:
         """Delete the user from the database"""
         print("Deleting data...")
@@ -55,14 +58,14 @@ class User:
         return users
 
     @classmethod
-    def find_by_attribute(cls, by_attribute : str, attribute_value : str, num_to_return = None) -> 'User':
-        """From the matches in the database, select the user with the given attribute value"""
-        UserQuery = Query()
-        result = cls.db_connector.search(UserQuery[by_attribute] == attribute_value)
+    def find_by_attribute(cls, by_attribute: str, attribute_value: str, num_to_return=1):
+        # Load data from the database and create an instance of the Device class
+        DeviceQuery = Query()
+        result = cls.db_connector.search(DeviceQuery[by_attribute] == attribute_value)
 
         if result:
             data = result[:num_to_return]
-            users_results = [cls(d['id']) for d in data]
-            return users_results if num_to_return > 1 else users_results[0]
+            device_results = [cls(d['id'], d['name']) for d in data]
+            return device_results if num_to_return > 1 else device_results[0]
         else:
             return None
