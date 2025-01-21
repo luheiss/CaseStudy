@@ -59,13 +59,17 @@ class User:
 
     @classmethod
     def find_by_attribute(cls, by_attribute: str, attribute_value: str, num_to_return=1):
-        # Load data from the database and create an instance of the Device class
-        DeviceQuery = Query()
-        result = cls.db_connector.search(DeviceQuery[by_attribute] == attribute_value)
+        # Load data from the database and create an instance of the user class
+        UserQuery = Query()
+        result = cls.db_connector.search(UserQuery[by_attribute] == attribute_value)
 
         if result:
             data = result[:num_to_return]
-            device_results = [cls(d['id'], d['name']) for d in data]
-            return device_results if num_to_return > 1 else device_results[0]
+            user_results = [cls(d['id'], d['name']) for d in data]
+            return user_results if num_to_return > 1 else user_results[0]
         else:
             return None
+
+if __name__ == "__main__":
+ print(User.find_all())
+ print(User.find_by_attribute("id", "two@mci.edu"))

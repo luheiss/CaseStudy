@@ -1,7 +1,7 @@
 import streamlit as st
 from devices import Device
 from users import User
-from reservation import Reservation
+#from reservation import Reservation
 import queries as qr
 
 st.title("Geräteverwaltung MCI")
@@ -11,24 +11,25 @@ tab1, tab2, tab3, tab4 = st.tabs(["Reservierungen", "Geräte", "Nutzer", "Wartun
 
 with tab1:
     st.header("Reservierungssystem")
-    devices_in_db = qr.find_devices()
-    user_in_db = qr.find_users()
-    st.subheader("Gerät auswählen")
-    selected_device = st.selectbox("Wählen Sie ein Gerät:", devices_in_db)
-    selected_user = st.selectbox("Wähle Benutzer", user_in_db)
-    with st.form("Reservierung anlegen"):
-        reservation_start = st.date_input("Startdatum der Reservierung:")
-        reservation_end = st.date_input("Enddatum der Reservierung:")
-        submitted = st.form_submit_button("Reservierung anlegen")
-        if submitted:
-             if reservation_start <= reservation_end:
-                # Hier könnten Daten in die Datenbank gespeichert werden
-                Reservation(selected_user,selected_device,reservation_start,reservation_end)
-                Reservation.store_data()
-                st.success(f"Reservierung für **{selected_device}** angelegt: \n\n"
-                    f"Reservierender Nutzer: {selected_user}\n"
-                    f"Startdatum: {reservation_start}\n"
-                    f"Enddatum: {reservation_end}")
+
+    # devices_in_db = qr.find_devices()
+    # user_in_db = qr.find_users()
+    # st.subheader("Gerät auswählen")
+    # selected_device = st.selectbox("Wählen Sie ein Gerät:", devices_in_db)
+    # selected_user = st.selectbox("Wähle Benutzer", user_in_db)
+    # with st.form("Reservierung anlegen"):
+    #     reservation_start = st.date_input("Startdatum der Reservierung:")
+    #     reservation_end = st.date_input("Enddatum der Reservierung:")
+    #     submitted = st.form_submit_button("Reservierung anlegen")
+    #     if submitted:
+    #          if reservation_start <= reservation_end:
+    #             # Hier könnten Daten in die Datenbank gespeichert werden
+    #             Reservation(selected_user,selected_device,reservation_start,reservation_end)
+    #             Reservation.store_data()
+    #             st.success(f"Reservierung für **{selected_device}** angelegt: \n\n"
+    #                 f"Reservierender Nutzer: {selected_user}\n"
+    #                 f"Startdatum: {reservation_start}\n"
+    #                 f"Enddatum: {reservation_end}")
 
     # # 1. Gerät auswählen
     # if devices_in_db:
@@ -79,6 +80,8 @@ with tab2:
     # Alle Geräte und Benutzer aus der Datenbank laden
     devices_in_db = qr.find_devices()
     user_in_db = qr.find_users()
+    #devices_in_db= Device.find_all()
+    #user_in_db= User.find_all()
     tab5, tab6 = st.tabs(["Neues Gerät anlegen","Geräte Einstellungen ändern"])
 
 
@@ -107,17 +110,17 @@ with tab2:
                     st.write(f"Ausgewähltes Gerät: **{loaded_device.device_name}**")
 
                 with st.form("Geräte-Einstellungen"):
-                                    new_manager= st.selectbox('User ändern', user_in_db)
-                                    submitted = st.form_submit_button("Speichern")
-                                    if submitted:
-                                        loaded_device.set_managed_by_user_id(new_manager)
-                                        loaded_device.store_data()
-                                        st.success(f"Änderungen für **{loaded_device.device_name}** wurden gespeichert!")
-                                        st.rerun()
+                    new_manager= st.selectbox('User ändern', user_in_db)
+                    submitted = st.form_submit_button("Speichern")
+                    if submitted:
+                        loaded_device.set_managed_by_user_id(new_manager)
+                        loaded_device.store_data()
+                        st.success(f"Änderungen für **{loaded_device.device_name}** wurden gespeichert!")
+                        st.rerun()
 
 with tab3:
     #devices_in_db = qr.find_devices()
-    user_in_db = qr.find_users()
+    #user_in_db = qr.find_users()
     st.header("Nutzer- Verwaltung")
     tab7,tab8= st.tabs(["Neuen Nutzer anlegen", "Nutzer bearbeiten"])
     with tab7:
@@ -137,7 +140,7 @@ with tab3:
         st.write("Edit user")
         current_user= st.selectbox("User",user_in_db)
         if current_user in user_in_db:
-                loaded_user = User.find_by_attribute("id", current_user)
+            loaded_user = User.find_by_attribute("id", current_user)
     
         with st.form("User-Einstellungen"):
             new_name= st.text_input(f"Name: {loaded_user.name}", key="new_user")
