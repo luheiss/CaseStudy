@@ -2,17 +2,17 @@
     "devices": {
         "1": {
             "device_name": "Device1",
-            "managed_by_user_id": "tttttttttt.edu",
+            "managed_by_user_id": "one@mci.edu",
             "is_active": true
         },
         "2": {
             "device_name": "Device2",
-            "managed_by_user_id": "tttttttttt.edu",
+            "managed_by_user_id": "two@mci.edu",
             "is_active": true
         },
         "3": {
             "device_name": "Device3",
-            "managed_by_user_id": "test@email.d",
+            "managed_by_user_id": "four@mci.edu",
             "is_active": true
         },
         "4": {
@@ -91,32 +91,14 @@
         }
     },
     "reservations": {
-        "1": {
-            "id": "one@mci.edu_Device1_2021-01-01 00:00:00",
-            "creation_date": "{TinyDateTime}:2025-01-21T09:28:06.816823",
-            "last_update": "{TinyDateTime}:2025-01-21T09:28:06.816823",
-            "user_id": "one@mci.edu",
-            "device_id": "Device1",
-            "start_date": "2021-01-01 00:00:00",
-            "end_date": "2021-01-02 00:00:00"
-        },
-        "2": {
-            "id": "one@mci.edu_Device2_2021-01-01 00:00:00",
-            "creation_date": "{TinyDateTime}:2025-01-21T09:28:06.816823",
-            "last_update": "{TinyDateTime}:2025-01-21T09:28:06.816823",
-            "user_id": "one@mci.edu",
-            "device_id": "Device2",
-            "start_date": "2021-01-01 00:00:00",
-            "end_date": "2021-01-02 00:00:00"
-        },
-        "3": {
-            "id": "two@mci.edu_Device2_2021-01-02 00:00:00",
-            "creation_date": "{TinyDateTime}:2025-01-21T09:28:06.816823",
-            "last_update": "{TinyDateTime}:2025-01-21T09:28:06.816823",
+        "5": {
+            "id": "two@mci.edu_Device1_2025-01-23",
+            "creation_date": "{TinyDateTime}:2025-01-23T11:00:28.491205",
+            "last_update": "{TinyDateTime}:2025-01-23T11:00:28.491205",
             "user_id": "two@mci.edu",
-            "device_id": "Device2",
-            "start_date": "2021-01-02 00:00:00",
-            "end_date": "2021-01-03 00:00:00"
+            "device_id": "Device1",
+            "start_date": "{TinyDate}:2025-01-23",
+            "end_date": "{TinyDate}:2025-01-30"
         }
     }
 }

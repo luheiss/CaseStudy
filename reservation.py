@@ -1,5 +1,5 @@
 import os
-from tinydb import TinyDB
+from tinydb import Query, TinyDB
 from serializable import Serializable
 #from database import DatabaseConnector
 from datetime import datetime
@@ -28,6 +28,20 @@ class Reservation(Serializable):
 
     def __str__(self):
         return F"Reservation: from {self.user_id} for {self.device_id}: {self.start_date} - {self.end_date}"
+    
+    def store_data(self):
+        print("Storing data...")
+        # Check if the device already exists in the database
+        DeviceQuery = Query()
+        result = self.db_connector.search(DeviceQuery.user_id == self.user_id)
+        if result:
+            # Update the existing record with the current instance's data
+            result = self.db_connector.update(self.__dict__, doc_ids=[result[0].doc_id])
+            print("Data updated.")
+        else:
+            # If the device doesn't exist, insert a new record
+            self.db_connector.insert(self.__dict__)
+            print("Data inserted.")
 
 if __name__ == "__main__":
     # Create a device

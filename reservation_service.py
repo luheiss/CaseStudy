@@ -1,6 +1,6 @@
 from reservation import Reservation
-from devices_inheritance import Device
-from users_inheritance import User
+from devices import Device
+from users import User
 
 
 class ReservationService():

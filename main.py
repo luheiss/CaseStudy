@@ -1,7 +1,7 @@
 import streamlit as st
 from devices import Device
 from users import User
-#from reservation import Reservation
+from reservation import Reservation
 import queries as qr
 
 st.title("Geräteverwaltung MCI")
@@ -12,24 +12,24 @@ tab1, tab2, tab3, tab4 = st.tabs(["Reservierungen", "Geräte", "Nutzer", "Wartun
 with tab1:
     st.header("Reservierungssystem")
 
-    # devices_in_db = qr.find_devices()
-    # user_in_db = qr.find_users()
-    # st.subheader("Gerät auswählen")
-    # selected_device = st.selectbox("Wählen Sie ein Gerät:", devices_in_db)
-    # selected_user = st.selectbox("Wähle Benutzer", user_in_db)
-    # with st.form("Reservierung anlegen"):
-    #     reservation_start = st.date_input("Startdatum der Reservierung:")
-    #     reservation_end = st.date_input("Enddatum der Reservierung:")
-    #     submitted = st.form_submit_button("Reservierung anlegen")
-    #     if submitted:
-    #          if reservation_start <= reservation_end:
-    #             # Hier könnten Daten in die Datenbank gespeichert werden
-    #             Reservation(selected_user,selected_device,reservation_start,reservation_end)
-    #             Reservation.store_data()
-    #             st.success(f"Reservierung für **{selected_device}** angelegt: \n\n"
-    #                 f"Reservierender Nutzer: {selected_user}\n"
-    #                 f"Startdatum: {reservation_start}\n"
-    #                 f"Enddatum: {reservation_end}")
+    devices_in_db = qr.find_devices()
+    user_in_db = qr.find_users()
+    st.subheader("Gerät auswählen")
+    selected_device = st.selectbox("Wählen Sie ein Gerät:", devices_in_db)
+    selected_user = st.selectbox("Wähle Benutzer", user_in_db)
+    with st.form("Reservierung anlegen"):
+        reservation_start = st.date_input("Startdatum der Reservierung:")
+        reservation_end = st.date_input("Enddatum der Reservierung:")
+        submitted = st.form_submit_button("Reservierung anlegen")
+        if submitted:
+             if reservation_start <= reservation_end:
+                # Hier könnten Daten in die Datenbank gespeichert werden
+                new= Reservation(selected_user,selected_device,reservation_start,reservation_end)
+                new.store_data()
+                st.success(f"Reservierung für **{selected_device}** angelegt: \n\n"
+                    f"Reservierender Nutzer: {selected_user}\n"
+                    f"Startdatum: {reservation_start}\n"
+                    f"Enddatum: {reservation_end}")
 
     # # 1. Gerät auswählen
     # if devices_in_db:
