@@ -3,6 +3,8 @@ from devices import Device
 from users import User
 from reservation import Reservation
 import queries as qr
+from maintenance import Maintenance
+from datetime import datetime
 
 st.title("Geräteverwaltung MCI")
 
@@ -48,7 +50,7 @@ with tab1:
 
 with tab2:
     # Überschrift
-    st.write("# Gerätemanagement")
+    st.header("Gerätemanagement")
 
     # Alle Geräte und Benutzer aus der Datenbank laden
     devices_in_db = qr.find_devices()
@@ -92,7 +94,9 @@ with tab2:
                     Device.delete(loaded_device)
 
 with tab3:
-    st.header("Nutzer- Verwaltung")
+    #devices_in_db = qr.find_devices()
+    #user_in_db = qr.find_users()
+    st.header("Nutzer - Verwaltung")
     tab7,tab8= st.tabs(["Neuen Nutzer anlegen", "Nutzer bearbeiten"])
     with tab7:
         new_user_name= st.text_input("Name")
@@ -108,13 +112,13 @@ with tab3:
                 newUser.store_data()
                 st.success(f"Benutzer *{new_user_name}* wurde erfolgreich angelegt!")
     with tab8:
-        st.write("Edit user")
         current_user= st.selectbox("User",user_in_db)
         if current_user in user_in_db:
             loaded_user = User.find_by_attribute("id", current_user)
     
+        st.write("Geben Sie den neuen Username in das Feld ein:")
         with st.form("User-Einstellungen"):
-            new_name= st.text_input(f"Name: {loaded_user.name}", key="new_user")
+            new_name= st.text_input(f"Aktueller Username: {loaded_user.name}", key="new_user")
             submitted = st.form_submit_button("Speichern")
             if submitted:
                 loaded_user.set_user_name(new_name)
@@ -126,4 +130,65 @@ with tab3:
              User.delete(loaded_user)
 with tab4:
     st.header("Wartungsmanagement")
+    tab9, tab10, tab11 = st.tabs(["Nächste Wartungstermine", "Wartung anlegen", "Wartungsplan verändern"])
+    devices_in_db = qr.find_devices()
+
+    with tab9:
+        for device in devices_in_db:
+            loaded_maintenance = Maintenance.find_by_attribute("device_id", device, num_to_return=1)
+            if loaded_maintenance:
+                next_maintenance = loaded_maintenance[0].next_maintenance
+                st.write(f"Gerät: {device}, Nächste Wartung: {next_maintenance.date()}")
+            else:
+                st.write(f"Gerät: {device}, Keine geplanten Wartungen")
+
+        # Wartungskosten pro Quartal berechnen und anzeigen
+        st.subheader("Wartungskosten pro Quartal")
+        current_year = datetime.now().year
+        quarterly_costs = {1: 0, 2: 0, 3: 0, 4: 0}
+
+        all_maintenances = Maintenance.find_all()
+        for maintenance in all_maintenances:
+            next_maintenance_date = maintenance.next_maintenance
+            if next_maintenance_date.year == current_year:
+                quarter = (next_maintenance_date.month - 1) // 3 + 1
+                quarterly_costs[quarter] += maintenance.__maintenance_cost
+
+        for quarter, cost in quarterly_costs.items():
+            st.write(f"Q{quarter} {current_year}: {cost} EUR")
   
+    with tab10:
+        with st.form("Wartung anlegen"):
+            selected_device = st.selectbox("Wählen Sie ein Gerät:", devices_in_db)
+            first_maintenance = st.date_input("Erstes Wartungsdatum:")
+            maintenance_interval = st.number_input("Wartungsintervall (Tage):", min_value=1)
+            maintenance_cost = st.number_input("Wartungskosten (EUR):", min_value=0.0)
+
+            submitted = st.form_submit_button("Wartung anlegen")
+            if submitted:
+                new_maintenance = Maintenance(selected_device, first_maintenance, maintenance_interval, maintenance_cost)
+                new_maintenance.store_data()
+                st.success(f"Wartung für **{selected_device}** wurde erfolgreich angelegt!")
+
+    with tab11:
+        with st.form("Wartung aktualisieren"):
+            selected_device = st.selectbox("Wählen Sie ein Gerät:", devices_in_db)
+            loaded_maintenance = Maintenance.find_by_attribute("device_id", selected_device, num_to_return=1)
+    
+            if loaded_maintenance:
+                maintenance = loaded_maintenance[0]
+                st.write(f"Aktuelle nächste Wartung: {maintenance.next_maintenance.date()}")
+    
+                new_first_maintenance = st.date_input("Neues erstes Wartungsdatum:", value=maintenance.first_maintenance)
+                new_maintenance_interval = st.number_input("Neues Wartungsintervall (Tage):", min_value=1, value=maintenance.__maintenance_interval)
+                new_maintenance_cost = st.number_input("Neue Wartungskosten (EUR):", min_value=0.0, value=maintenance.__maintenance_cost)
+    
+                submitted = st.form_submit_button("Wartung aktualisieren")
+                if submitted:
+                    maintenance.first_maintenance = new_first_maintenance
+                    maintenance.__maintenance_interval = new_maintenance_interval
+                    maintenance.__maintenance_cost = new_maintenance_cost
+                    maintenance.update_maintenance()
+                    st.success(f"Wartung für **{selected_device}** wurde erfolgreich aktualisiert!")
+            else:
+                st.write("Keine geplanten Wartungen für das ausgewählte Gerät.")
