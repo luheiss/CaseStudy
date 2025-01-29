@@ -28,6 +28,9 @@ class Serializable(ABC):
         else:
             print("Data inserted.")
 
+    @classmethod
+    def get_Info(self)-> str:
+        pass
     
     def delete(self):
         print("Deleting data...")

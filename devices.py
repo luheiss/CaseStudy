@@ -24,6 +24,14 @@ class Device():
     def __repr__(self):
         return self.__str__()
     
+    def get_Info(self, info: str) -> str:
+        if info == "device_name":
+            return self.device_name
+        elif info == "managed_by_user_id":
+            return self.managed_by_user_id
+        elif info == "is_active":
+            return str(self.is_active)
+    
     def store_data(self):
         print("Storing data...")
         # Check if the device already exists in the database
@@ -104,5 +112,7 @@ if __name__ == "__main__":
     print("All devices:")
     for device in devices:
         print(device)
+
+    print(f"Test {device1.get_Info("device_name")}")
 
     
