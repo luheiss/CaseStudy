@@ -1,20 +1,23 @@
 import os
-
+from datetime import datetime, timedelta
 from tinydb import TinyDB, Query
 from serializer import serializer
 
-
-class Device():
+class Device:
     # Class variable that is shared between all instances of the class
     db_connector = TinyDB(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'database.json'), storage=serializer).table('devices')
 
     # Constructor
-    def __init__(self, device_name : str, managed_by_user_id : str):
+    def __init__(self, device_name: str, managed_by_user_id: str, first_maintenance: datetime = None, maintenance_interval: int = 0, maintenance_cost: float = 0.0, next_maintenance: datetime = None, creation_date: datetime = None, last_update: datetime = None) -> None:
         self.device_name = device_name
-        # The user id of the user that manages the device
-        # We don't store the user object itself, but only the id (as a key)
         self.managed_by_user_id = managed_by_user_id
+        self.first_maintenance = first_maintenance
+        self.maintenance_interval = maintenance_interval
+        self.maintenance_cost = maintenance_cost
+        self.next_maintenance = next_maintenance if next_maintenance else self.calculate_next_maintenance()
         self.is_active = True
+        self.creation_date = creation_date if creation_date else datetime.now()
+        self.last_update = last_update if last_update else datetime.now()
         
     # String representation of the class
     def __str__(self):
@@ -23,7 +26,7 @@ class Device():
     # String representation of the class
     def __repr__(self):
         return self.__str__()
-    
+
     def get_Info(self, info: str) -> str:
         if info == "device_name":
             return self.device_name
@@ -31,7 +34,7 @@ class Device():
             return self.managed_by_user_id
         elif info == "is_active":
             return str(self.is_active)
-    
+
     def store_data(self):
         print("Storing data...")
         # Check if the device already exists in the database
@@ -39,13 +42,13 @@ class Device():
         result = self.db_connector.search(DeviceQuery.device_name == self.device_name)
         if result:
             # Update the existing record with the current instance's data
-            result = self.db_connector.update(self.__dict__, doc_ids=[result[0].doc_id])
+            self.db_connector.update(self.to_dict(), doc_ids=[result[0].doc_id])
             print("Data updated.")
         else:
             # If the device doesn't exist, insert a new record
-            self.db_connector.insert(self.__dict__)
+            self.db_connector.insert(self.to_dict())
             print("Data inserted.")
-    
+
     def delete(self):
         print("Deleting data...")
         # Check if the device exists in the database
@@ -71,7 +74,7 @@ class Device():
 
         if result:
             data = result[:num_to_return]
-            device_results = [cls(d['device_name'], d['managed_by_user_id']) for d in data]
+            device_results = [cls.instantiate_from_dict(d) for d in data]
             return device_results if num_to_return > 1 else device_results[0]
         else:
             return None
@@ -81,38 +84,46 @@ class Device():
         # Load all data from the database and create instances of the Device class
         devices = []
         for device_data in Device.db_connector.all():
-            devices.append(Device(device_data['device_name'], device_data['managed_by_user_id']))
+            devices.append(cls.instantiate_from_dict(device_data))
         return devices
 
+    def calculate_next_maintenance(self) -> datetime:
+        if self.first_maintenance and self.maintenance_interval > 0:
+            return self.first_maintenance + timedelta(days=self.maintenance_interval)
+        return None
 
+    def update_maintenance(self):
+        if self.next_maintenance and self.maintenance_interval > 0:
+            self.first_maintenance = self.next_maintenance
+            self.next_maintenance = self.calculate_next_maintenance()
+            self.last_update = datetime.now()
+            self.store_data()
 
-    
+    @classmethod
+    def instantiate_from_dict(cls, data: dict) -> 'Device':
+        def parse_datetime(dt):
+            return datetime.fromisoformat(dt) if isinstance(dt, str) else None
+        
+        return cls(
+            data['device_name'], 
+            data['managed_by_user_id'], 
+            parse_datetime(data.get('first_maintenance')), 
+            data.get('maintenance_interval', 0), 
+            data.get('maintenance_cost', 0.0), 
+            parse_datetime(data.get('next_maintenance')),
+            parse_datetime(data.get('creation_date')), 
+            parse_datetime(data.get('last_update'))
+        )
 
-if __name__ == "__main__":
-    # Create a device
-    device1 = Device("Device1", "one@mci.edu")
-    device2 = Device("Device2", "two@mci.edu") 
-    device3 = Device("Device3", "two@mci.edu") 
-    device4 = Device("Device4", "two@mci.edu") 
-    device1.store_data()
-    device2.store_data()
-    device3.store_data()
-    device4.store_data()
-    device5 = Device("Device3", "four@mci.edu") 
-    device5.store_data()
-
-    #loaded_device = Device.find_by_attribute("device_name", "Device2")
-    loaded_device = Device.find_by_attribute("managed_by_user_id", "two@mci.edu")
-    if loaded_device:
-        print(f"Loaded Device: {loaded_device}")
-    else:
-        print("Device not found.")
-
-    devices = Device.find_all()
-    print("All devices:")
-    for device in devices:
-        print(device)
-
-    print(f"Test {device1.get_Info("device_name")}")
-
-    
+    def to_dict(self) -> dict:
+        return {
+            'device_name': self.device_name,
+            'managed_by_user_id': self.managed_by_user_id,
+            'first_maintenance': self.first_maintenance.isoformat() if self.first_maintenance else None,
+            'maintenance_interval': self.maintenance_interval,
+            'maintenance_cost': self.maintenance_cost,
+            'next_maintenance': self.next_maintenance.isoformat() if self.next_maintenance else None,
+            'is_active': self.is_active,
+            'creation_date': self.creation_date.isoformat(),
+            'last_update': self.last_update.isoformat()
+        }
